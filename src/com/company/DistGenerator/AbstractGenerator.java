@@ -15,7 +15,7 @@ import java.util.Random;
 abstract class AbstractGenerator {
     private DynamicBin1D bin;
     private RandomEngine engine;
-    private int size = 1000000;//随机数生成数量
+    private int size = 100000;//随机数生成数量
     private double noiseFactor = 1;
     private double mean;//平均值
     private double rms;//均方根值
@@ -23,6 +23,52 @@ abstract class AbstractGenerator {
     private double skew;//偏态
     private double kurtosis;//峰值
     private double quantile25, quantile50, quantile75;//分位点
+    private double mDistInt;
+
+    public void setmDistInt(int mDistInt) {
+        this.mDistInt = mDistInt;
+    }
+
+    public double getmDistInt() {
+        return mDistInt;
+    }
+
+    public double getMean() {
+        return mean;
+    }
+
+    public double getRms() {
+        return rms;
+    }
+
+    public double getVariance() {
+        return variance;
+    }
+
+    public double getSkew() {
+        return skew;
+    }
+
+    public double getKurtosis() {
+        return kurtosis;
+    }
+
+    public double getQuantile25() {
+        return quantile25;
+    }
+
+    public double getQuantile50() {
+        return quantile50;
+    }
+
+    public double getQuantile75() {
+        return quantile75;
+    }
+
+    public double[] getAccArr() {
+        double[] accArr = new double[]{getMean(), getRms(), getVariance(), getSkew(), getKurtosis(), getQuantile25(), getQuantile50(), getQuantile75()};
+        return accArr;
+    }
 
     public void setNoiseFactor(double noiseFactor) {
         this.noiseFactor = noiseFactor;
@@ -32,7 +78,7 @@ abstract class AbstractGenerator {
         return size;
     }
 
-    public void setFeatues() {
+    public void setFeatures() {
         this.mean = getBin().mean();
         this.rms = getBin().rms();
         this.variance = getBin().variance();
@@ -41,6 +87,7 @@ abstract class AbstractGenerator {
         this.quantile25 = getBin().quantile(0.25);
         this.quantile50 = getBin().quantile(0.5);
         this.quantile75 = getBin().quantile(0.75);
+        bin.clear();
     }
 
     public void setSize(int size) {
@@ -49,6 +96,7 @@ abstract class AbstractGenerator {
 
     /**
      * 设置随机数生成引擎为MersenneTwister
+     *
      * @return
      */
     public RandomEngine getEngine() {
@@ -65,6 +113,7 @@ abstract class AbstractGenerator {
 
     /**
      * 随机生成符合分布的size个数据
+     *
      * @param distribution 分布类型
      */
     public void random(AbstractDistribution distribution) {
@@ -76,10 +125,12 @@ abstract class AbstractGenerator {
                 numbers.add(distribution.nextDouble());
         }
         this.getBin().addAllOf(numbers);
+        this.setFeatures();
     }
 
     /**
      * 生成噪声
+     *
      * @param numbers 数据列表
      */
     public void addNoise(DoubleArrayList numbers) {
@@ -87,9 +138,13 @@ abstract class AbstractGenerator {
         numbers.add(random.nextGaussian() * noiseFactor);
     }
 
-    public void print() {
-        if (this.getBin() != null)
-            System.out.println(this.getBin());
+    public void printStart() {
+        System.out.println(this.getClass().getName() + "开始");
+    }
+
+    public void printEnd(int i) {
+        System.out.println(this.getClass().getName() + "结束,生成"+i+"条数据");
+
     }
 
     public void generate(double v) {
@@ -103,4 +158,6 @@ abstract class AbstractGenerator {
 
     public void generate(int v, double v1) {
     }
+
+
 }

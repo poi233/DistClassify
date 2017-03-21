@@ -9,5 +9,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="colt:colt:1.2.0" level="project" />
     <orderEntry type="library" name="tk.jomp16:events_library:2.0.2" level="project" />
+    <orderEntry type="library" name="com.datumbox:libsvm:3.22" level="project" />
+    <orderEntry type="library" name="junit:junit:4.10" level="project" />
   </component>
 </module>
